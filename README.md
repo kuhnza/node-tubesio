@@ -14,7 +14,7 @@ The tubes.io library for [node](http://nodejs.org) is a collection of clients an
 interacting with tubes.io services. The library consists of two parts:
 
 1. [Command Line Interface](#command-line-interface) (CLI)
-2. [tubesio node lib](#tubesio-node-lib)
+2. [tubesio lib](#tubesio-lib)
 
 The CLI is used to manage scripts and deployments while the library is meant to be included
 in your node or coffee scripts to provide access to essential tubes.io services such as 
@@ -92,7 +92,7 @@ You can test the deployed script by running:
 
 > Note: be sure to include your API key in the querystring and any other args your tube requires.
 
-## tubesio node lib
+## tubesio lib
 
 Usage of the tubesio node library is probably best demonstrated by example. Here's a simple node
 script that performs a HTTP request, parses the resulting HTML and extracts the page title:
@@ -140,24 +140,118 @@ Lastly a call to the [finish](#tubesio-finish) completes the request. It's
 important that all code paths eventually call `finish`. Neglecting to do so
 will cause your script to timeout as the node runtime won't know when
 your script is finished. The `finish` method is also important because the 
-data you pass to it is what gets returned from the API. `finish` only accepts
-objects that are JSON serializable (i.e. passing a naked number or string 
-won't work).
+data you pass to it is what gets returned from the API. 
+
+> Note: `finish` only accepts objects that are JSON serializable (i.e. passing 
+> a naked number or string won't work).
 
 
 ### Modules
 
-* [tubesio.http](#http)
-* [tubesio.logging](#logging)
-* [tubesio.utils](#utils)
+* [tubesio.http](#tubesiohttp)
+* [tubesio.logging](#tubesiologging)
+* [tubesio.utils](#tubesioutils)
 
 #### tubesio.http 
 
-TODO
+##### request(location, [settings])
+
+A vastly simplified and elegent HTTP request method. Supports smart 
+switching between HTTP/HTTPS based on URL, automatic GZIP and DEFLATE 
+decompression, object serialization and proxy servers. 
+
+> Important: It's strongly advised that you use this function over 
+> node's raw http.request or other third party libraries as it automatically 
+> proxies requests via our IP rotation service. We will not provide support
+> for people wishing to use other methods.
+
+The `location` argument should be a string containing a URL or an object 
+containing a `location` property set to the URL being requested.
+
+The `settings` argument can be either a callback function or an object
+containing a `complete` property set to the callback function to call
+when the request completes.
+
+Settings:
+
+* complete: a callback function that takes the arugments err, body.
+* cookieJar: an instance of CookieJar for cookie support. Defaults to null.
+* data: a string or object. Strings are sent verbatim whilst objects are serialized 
+according to the content-type set in the headers. Method will also be set to `POST` 
+where method is not explicitly set. Currently detects `application/x-www-form-urlencoded` 
+and `application/json`. Where no content-type header exists defaults to form encoding. 
+* headers: an object containing key-value pairs of headers to send with request.
+* method: the HTTP method to perform the request with. Defaults to `GET`.
+
+##### setProxy(config)
+
+Sets the global proxy configuration object. This will impact all requests during the lifetime
+of the script. Under normal circumstances calling setProxy is not required. Importing
+the tubesio library automatically configures the correct proxy.
+
+The `config` argument can be a string, object or function. Strings are processed using
+node's [url.parse](http://nodejs.org/docs/latest/api/url.html#url_url_parse_urlstr_parsequerystring_slashesdenotehost)
+method. When passing a function it should produce either a string or configuration object.
+
+Configuration objects should conform to the following structure:
+
+```javascript
+{
+    host: 'hostname',
+    port: 80,
+    proxyAuth: 'user:pass'
+}
+```
+
+> Note: port and proxyAuth are optional. Defaults to port 80 and no authentication.
+
+##### Class: CookieJar
+
+CookieJar provides cookie support and persistance across HTTP requests. It behaves like
+a browser for the most part, simply accepting cookies and storing their values as well 
+as passing cookie values with subsequent requests.
+
+As a rule you shouldn't need to use the CookieJar class directly. Creating a CookieJar
+instance and passing it with your requests is all that's required.
+
+Example:
+
+```javascript
+var cookieJar = tubesio.http.CookieJar();
+
+request('http://tubes.io', { 
+    cookieJar: cookieJar,
+    complete: function () { ... }
+});
+```
+
+> Note: you should create the CookieJar instance in the global scope in order to persist
+> and reuse it across requests.
+
+###### cookieJar.get(key)
+
+###### cookieJar.getValue(key)
+
+###### cookieJar.set(cookieString)
+
+###### cookieJar.toString()
 
 #### tubesio.logging
 
-TODO
+##### Class: Logger
+
+A logger that logs exclusively to stderr. Includes timestamps in log output 
+and supports log level filtering.
+
+###### logger.log(level, message)
+
+###### logger.verbose(message)
+
+###### logger.info(message)
+
+###### logger.warn(message)
+
+###### logger.error(message)
 
 #### tubesio.utils
 
