@@ -3,16 +3,18 @@
 	"version": "0.1.0",
 	"author": "tubes.io <support@tubes.io>",
 	"description": "A collection of clients and utilities for interacting with tubes.io services via Node JS.",
+	"homepage": "http://tubes.io",
+	"bugs": "https://github.com/kuhnza/node-tubesio/issues",
 	"contributors": [
 		{
 			"name": "Dave Kuhn",
 			"email": "david.s.kuhn@gmail.com"
 		}
 	],
-	"main": "./lib/tubesio.js",
+	"main": "./lib/index.js",
 	"preferGlobal": "true",
 	"bin": {
-		"tubesio" : "./bin/tubesio.js"
+		"tubesio" : "./bin/tubesio"
 	},
 	"repository": {
 		"type": "git",
