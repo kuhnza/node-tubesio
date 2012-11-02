@@ -9,10 +9,10 @@
 			"email": "david.s.kuhn@gmail.com"
 		}
 	],
-	"main": "bin/tubesio.js",
+	"main": "./lib/tubesio.js",
 	"preferGlobal": "true",
 	"bin": {
-		"tubesio" : "lib/tubesio.js"
+		"tubesio" : "./bin/tubesio.js"
 	},
 	"repository": {
 		"type": "git",

@@ -23,7 +23,7 @@ function handleErr(err, command) {
 }
 
 function usage() {
-	console.log('\nUsage: hubify <command>');
+	console.log('\nUsage: tubesio <command>');
 	console.log('');
 	console.log('where command is one of:\n');
 	console.log('\tcreate, delete, deploy, init, run, rollback');
@@ -35,9 +35,9 @@ function main() {
 	
 	nconf.argv()
          .env()
-         .file(process.cwd() + '/.hubify')
-         .file('user', getUserHome() + '/.hubify')
-         .defaults({ host: 'hubify.com' });
+         .file(process.cwd() + '/.tubesio')
+         .file('user', getUserHome() + '/.tubesio')
+         .defaults({ host: 'tubes.io' });
 
 	if (argv._.length === 0) {
 		usage();

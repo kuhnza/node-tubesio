@@ -25,7 +25,7 @@ _.extend(BaseCommand.prototype, {
 
 /**
  * PrivilegedCommand: Abstract base class for commands that access protected
- * Hubify APIs.
+ * tubes.io APIs.
  */
 function PrivilegedCommand() {
 	BaseCommand.call(this);
@@ -36,11 +36,11 @@ util.inherits(PrivilegedCommand, BaseCommand);
 _.extend(PrivilegedCommand.prototype, {
 	checkCredentialsExist: function(nconf) {		
 		if (!nconf.get('username')) {
-			throw new Error('Missing username! Specify it using --username argument or run `hubify init`.');		
+			throw new Error('Missing username! Specify it using --username argument or run `tubesio init`.');		
 		}
 
 		if (!nconf.get('apiKey')) {
-			throw new Error('Missing API key! Specify it using --apiKey argument or run `hubify init`.');
+			throw new Error('Missing API key! Specify it using --apiKey argument or run `tubesio init`.');
 		}	
 	}
 })
@@ -67,9 +67,9 @@ util.inherits(DeployCommand, PrivilegedCommand);
 
 _.extend(DeployCommand.prototype, {
 	help: function() {
-		console.log('\nUsage: hubify deploy [-f filename] hub-name\n' +
+		console.log('\nUsage: tubesio deploy [-f filename] hub-name\n' +
 					'\n' +
-					'Deploys a hubscript to hubify. Unless -f option is ' + 
+					'Deploys a hubscript to tubesio. Unless -f option is ' + 
 					'provided will look for a script of the same name as the ' + 
 					'hub ending in .js in the current directory.\n' +					
 					'\nWhere:\n' +
@@ -180,7 +180,7 @@ _.extend(DeployCommand.prototype, {
 });
 
 /**
- * Initialises a hubify development environment in the current directory.
+ * Initialises a tubesio development environment in the current directory.
  */
 function InitCommand() {
 	BaseCommand.call(this);
@@ -191,9 +191,9 @@ util.inherits(InitCommand, BaseCommand);
 _.extend(InitCommand.prototype, {
 	deps: ['async', 'cheerio', 'jsdom', 'underscore', 'underscore.string', 'hubstack'],
 	help: function() {
-		console.log('\nUsage: hubify init\n' +
+		console.log('\nUsage: tubesio init\n' +
 					'\n' +
-					'Initialises a hubify development environment in the ' +
+					'Initialises a tubesio development environment in the ' +
 					'current directory.');
 	},
 	run: function(nconf, argv, callback) {
@@ -202,12 +202,12 @@ _.extend(InitCommand.prototype, {
 			prompt = require('prompt'),
 			properties = [{
 				name: 'username',
-			    description: 'Enter your Hubify username:'.white,
+			    description: 'Enter your tubes.io username:'.white,
 			    message: 'Username cannot be blank.', 		      		      
 			    required: true
 			},{
 				name: 'apiKey',
-			    description: 'Enter your Hubify API key:'.white, 		      		      
+			    description: 'Enter your tubes.io API key:'.white, 		      		      
 			    message: 'API key cannot be blank.',
 			    required: true
 			}];
@@ -258,7 +258,7 @@ util.inherits(RollbackCommand, BaseCommand);
 
 _.extend(RollbackCommand.prototype, {
 	help: function() {
-		console.log('\nUsage: hubify rollback [-f filename] hub-name\n' +
+		console.log('\nUsage: tubesio rollback [-f filename] hub-name\n' +
 					'\n' +
 					'Rolls back to previous version of hubscript. Unless -f option is ' + 
 					'provided will look for a script of the same name as the ' + 
