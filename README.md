@@ -1,10 +1,10 @@
-# tubes.io library for Node JS
+# tubes.io library for node
 
-The tubes.io library for Node JS is a collection of clients and utilities for 
+The tubes.io library for [node](http://nodejs.org) is a collection of clients and utilities for 
 interacting with tubes.io services. The library consists of two parts:
 
-1. [The Command Line Interface](#Command Line Interface) (CLI)
-2. [The tubesio Node JS lib](#The tubesio Node JS lib)
+1. The [Command Line Interface](#command-line-interface) (CLI)
+2. The [tubes.io node lib](#tubesio-node-lib)
 
 ## Installation
 
@@ -22,7 +22,7 @@ interacting with tubes.io services. The library consists of two parts:
 A command-line interface for interacting with the tubes.io API. 
 
 The tubes.io CLI simplifies the process of environment setup and 
-subsequent management of hub scripts deployed on tubes.io.com. 
+subsequent management of hub scripts deployed on tubes.io. 
 
 ## Environment Setup
 
@@ -45,17 +45,17 @@ for your script once deployed.
 
 The current feature set is quite limited. Only automated 
 deployments are supported which means you will need to copy/paste
-existing scripts from tubes.io.com to your local environment. Creating
-new hubs must also be done from the tubes.io website.
+existing scripts from tubes.io to your local environment. Creating
+new tubes must also be done from the tubes.io website.
 
 By convention scripts should be named `<slug>.js` where slug
-is the slugified version of your hub's name. For example if your
-hub's name is My 1st Hub then your script name should be
-`my-1st-hub.js`. This generally means replacing spaces and
+is the slugified version of your tube's name. For example if your
+tube's name is My 1st Tube then your script name should be
+`my-1st-tube.js`. This generally means replacing spaces and
 special charachters with dashes. If you're unsure of what your
-hub's slug name is you should take a look at your hub's endpoint. 
+tube's slug name is you should take a look at your tube's endpoint. 
 The slug will be the portion after the last "/" and before the format
-".json" (e.g. http://tubes.io.com/username/hub/_my-1st-hub_.json)
+".json" (e.g. http://tubes.io/username/tube/_my-1st-tube_.json)
 
 Once you've copied your hub down into your local work directory
 you can deploy by running:
@@ -69,14 +69,19 @@ you can deploy by running:
 > file to use instead of the default. For example:
 >    `$ tubes.io deploy -f my-1st-tube.js.bak my-1st-tube`
 
-## The tubesio Node JS lib
+## tubes.io node lib
 
 ### Modules
 
-* tubesio.[request](#request)
+* tubesio.[http](#http)
+* tubesio.[logging](#logging)
 * tubesio.[utils](#utils)
 
-#### Request 
+#### HTTP 
+
+TODO
+
+#### Logging
 
 TODO
 
@@ -86,7 +91,9 @@ TODO
 
 ## Supported Languages
 
-Only JavaScript (Node JS) is supported at present but we have 
-plans to add CoffeeScript and Python in the near future.
+Only JavaScript and CoffeeScript running atop node is supported at present but we have 
+plans to add more languages in future. If you'd like a particular language added then
+[let us know](mailto:ideas@tubes.io). The more support we get for a language the greater 
+the chance it will be added.
 
 
