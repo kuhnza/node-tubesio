@@ -36,7 +36,7 @@ function parseGitHubTrendingRepos(err, body) {
 	$('#trending-repositories > ol > li').each(function (i, e) {
 		result.trending.push({
 			name: us.trim($(e).find('h3').text()),
-			href: 'https://github.com' + $(e).find('a').last().attr('href')
+			href: 'http://github.com' + $(e).find('a').last().attr('href')
 		});
 	});
 
@@ -50,10 +50,10 @@ function parseGitHubTrendingRepos(err, body) {
  * forever. Plug in your own if it no longer works. */
 var settings = {
 		complete: parseGitHubTrendingRepos,
-		proxy: {
-			host: '192.211.49.210', 
-			port: 3128
-		}
+		// proxy: {
+		// 	host: '192.211.49.210', 
+		// 	port: 3128
+		// }
 	};
 
 // Make the request

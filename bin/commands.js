@@ -1,13 +1,24 @@
-var _ = require('underscore'),
-	async = require('async'),
+var async = require('async'),
+	cp = require('child_process'),
 	http = require('http'),
 	url = require('url'),	
 	util = require('util');
+
+var _  = require('underscore');
+_.str = require('underscore.string'); // Import Underscore.string to separate object, because there are conflict functions (include, reverse, contains)
+_.mixin(_.str.exports()); // Mix in non-conflict functions to Underscore namespace if you want
+_.str.include('Underscore.string', 'string');  // All functions, include conflict, will be available through _.str object
+
 
 function basicAuthHeader(username, apiKey) {
 	return {
 		'Authorization': 'apikey ' + new Buffer(username + ':' + apiKey).toString('base64')
 	}
+}
+
+function getExtension(filename) {
+    var i = filename.lastIndexOf('.');
+    return (i < 0) ? '' : filename.substr(i);
 }
 
 /**
@@ -266,7 +277,107 @@ _.extend(RollbackCommand.prototype, {
 					'\nWhere:\n' +
 					'  -f\tFilename of the file to deploy.\n' +
 					'\nNote: deployed scripts take immediate effect.\n');
+	}
+});
+
+/**
+ * Runs a hub script
+ */
+function RunCommand() {
+	PrivilegedCommand.call(this);
+}
+
+util.inherits(RunCommand, BaseCommand);
+
+RunCommand.RUNTIMES = {
+	'node': true,
+	'coffee': true,
+	'phantomjs': true
+};
+
+_.extend(RunCommand.prototype, {
+	help: function () {
+
 	},
+	run: function (nconf, argv, callback) {
+		var runtime, filename, path, args, options, ext, startTime, endTime;
+
+		// Figure out which runtime to execute with
+		filename = argv._[1];
+		if (argv.r) {
+			if (argv.r in RunCommand.RUNTIMES) {
+				runtime = argv.r;
+			} else {
+				return callback(new Error('Unsupported runtime: ' + argv.r));
+			}
+		} else {
+			ext = getExtension(filename);
+			switch (ext) {
+				case '.coffee':
+					runtime = 'coffee';
+					break;
+				case '.js':
+					runtime = 'node';
+					break;
+				case '':
+					runtime = 'node';
+					break;
+				default:					
+					return callback(new Error('Unrecognised extension: ' + ext));
+			}
+		}
+
+		// Setup environment
+		path = runtime + ' ' + argv._.slice(1).join(' ');
+		options = {
+			env: {
+				USERNAME: nconf.get('username'),
+				API_KEY: nconf.get('apiKey')
+			},
+			timeout: 1000 * 30 
+		}
+		
+		// Run the script
+		startTime = new Date();
+		runtime = cp.exec(path, options, function (err, stdout, stderr) {
+            var response = {};
+            
+            if (err) {
+                response.success = false;                
+                if (err.signal === 'SIGKILL') {                    
+                    response.result = 'Script exceeded timeout (' + (options.timeout / 1000) + 's) and was terminated.'
+                } else {
+                    response.result = 'Script returned non-zero exit code: ' + err.code;
+                }   
+            } else {
+                response.success = true;                
+                        
+                try {
+                    response.result = JSON.parse(stdout);
+
+                    if (_.isArray(response.result)) {
+                        response.totalResults = response.result.length;
+                    }                    
+                } catch (err) {                    
+                    response.success = false;
+                    response.result = 'Script failed to output valid JSON. Error: ' + err.message + '\nOutput: ' + stdout;                    
+                }
+            }            
+          
+          	// Append debugging info to result
+            endTime = new Date();
+            _.extend(response, {
+                time: {
+                    start: startTime.toISOString(),
+                    end: endTime.toISOString(),
+                    elapsed: endTime - startTime
+                },
+                log: _.lines(stderr)
+            });
+
+            callback(null, JSON.stringify(response, null, 4));
+        });
+	}
 });
 
 
@@ -275,6 +386,6 @@ module.exports = {
 	delete: BaseCommand,
 	deploy: DeployCommand,
 	init: InitCommand,
-	run: BaseCommand,
+	run: RunCommand,
 	rollback: BaseCommand
 };
