@@ -1,3 +1,3 @@
-var tubesio = require('tubesio')(process.env.USERNAME, process.env.API_KEY);
+var tubesio = require('../lib/index')(process.env.USERNAME, process.env.API_KEY);
 
-tubesio.finish({hello: 'world'});  
+tubesio.finish({ hello: 'world' });  
