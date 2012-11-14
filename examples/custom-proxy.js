@@ -11,9 +11,12 @@
  * subsequent requests.
  */
 
+// Required imports
 var tubesio = require('../lib/index')(process.env.USERNAME, process.env.API_KEY),
-	http = tubesio.http,
-	cheerio = require('cheerio')
+	http = tubesio.http;
+
+// Optional imports
+var cheerio = require('cheerio'),
 	us = require('underscore.string');
 
 
