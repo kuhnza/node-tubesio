@@ -23,10 +23,10 @@ function handleErr(err, command) {
 }
 
 function usage() {
-	console.log('\nUsage: tubesio <command>');
+	console.log('\nUsage: tubesio <command> [ARGS...]');
 	console.log('');
 	console.log('where command is one of:\n');
-	console.log('\tcreate, delete, deploy, init, run, rollback');
+	console.log('\tcreate, deploy, init, run');
 	process.exit(1);
 }
 

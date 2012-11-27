@@ -66,6 +66,67 @@ function CreateCommand() {
 
 util.inherits(CreateCommand, BaseCommand);
 
+_.extend(CreateCommand.prototype, {
+	help: function() {
+
+	},
+	run: function(nconf, argv, callback) {
+		try {
+			this.checkCredentialsExist(nconf);
+		} catch (err) {
+			return callback(err);
+		}
+
+		var self = this,
+			npm = require('npm'),
+			prompt = require('prompt'),
+			properties = [{
+				name: 'name',
+			    description: 'Give your tube a name:'.white,
+			    message: 'Name cannot be blank.', 		      		      
+			    required: true
+			}];
+
+		prompt.message = '';
+		prompt.delimiter = '';
+
+		prompt.start();
+
+		prompt.get(properties, function (err, result) {
+		    if (err) { return handleErr(err, self); }
+
+			var options, req, data;
+
+			data = JSON.stringify({
+				owner: nconf.get('username'),
+				name: result.name
+			});
+
+			options = url.parse('http://' + host + '/api/v1/hub/');
+			options.method = 'POST';			
+			options.headers = basicAuthHeader(username, apiKey);
+			options.headers['Content-Type'] = 'application/json';
+			options.headers['Content-Length'] = data.length;
+
+			req = http.request(options, function (res) {
+				var body = '';
+
+				res.setEncoding('utf8');
+				res.on('data', function (chunk) {
+					body += chunk;
+				});
+
+				res.on('end', function () {
+					callback(null);
+				});
+			});
+
+			req.write(data);
+			req.end();
+		});
+	}
+});
+
 
 /**
  * Deploys a hub script.
@@ -200,7 +261,7 @@ function InitCommand() {
 util.inherits(InitCommand, BaseCommand);
 
 _.extend(InitCommand.prototype, {
-	deps: ['async', 'cheerio', 'jsdom', 'underscore', 'underscore.string', 'hubstack'],
+	deps: ['async', 'cheerio', 'jsdom', 'underscore', 'underscore.string', 'hubstack', 'tubesio'],
 	help: function() {
 		console.log('\nUsage: tubesio init\n' +
 					'\n' +
