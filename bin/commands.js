@@ -389,7 +389,7 @@ _.extend(RunCommand.prototype, {
 		}
 
 		// Setup environment
-		path = runtime + ' ' + argv._.slice(1).join(' ');
+		path = runtime + ' ' + process.argv.slice(3).join(' ');
 		options = {
 			env: {
 				USERNAME: nconf.get('username'),
