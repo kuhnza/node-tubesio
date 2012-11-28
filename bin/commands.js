@@ -361,6 +361,33 @@ _.extend(RunCommand.prototype, {
 
 	},
 	run: function (nconf, argv, callback) {
+		var tubeArgs = { api_key: nconf.get('apiKey') };
+
+		// Reparse arguments because we have more specific requirements.
+		argv = require('optimist').boolean('p')
+								  .boolean('production')
+								  .argv;
+
+		_.extend(tubeArgs, require('optimist').parse(argv._.slice(2)));
+		if (tubeArgs._.length > 0) {
+	        try {
+	            // Attempt to parse 1st argument as JSON string
+	            _.extend(tubeArgs, JSON.parse(tubeArgs._[0]));
+	        } catch (err) {
+	            throw new Error('Error parsing arguments: ' + err.message);
+	        }
+	    }
+		delete tubeArgs['_'];
+		delete tubeArgs['$0'];
+		tubeArgs = JSON.stringify(tubeArgs);
+
+		if (argv.p || argv.production) {
+			this.runRemote(nconf, argv, tubeArgs, callback);
+		} else {
+			this.runLocal(nconf, argv, tubeArgs, callback);
+		}
+	},
+	runLocal: function (nconf, argv, tubeArgs, callback) {
 		var runtime, filename, path, args, options, ext, startTime, endTime;
 
 		// Figure out which runtime to execute with
@@ -389,7 +416,7 @@ _.extend(RunCommand.prototype, {
 		}
 
 		// Setup environment
-		path = runtime + ' ' + process.argv.slice(3).join(' ');
+		path = runtime + ' ' + filename + ' ' + tubeArgs.replace(/"/g, '\\"');
 		options = {
 			env: {
 				USERNAME: nconf.get('username'),
@@ -438,6 +465,44 @@ _.extend(RunCommand.prototype, {
 
             callback(null, JSON.stringify(response, null, 4));
         });
+	},
+	runRemote: function (nconf, argv, tubeArgs, callback) {
+		var slug = argv._[1],
+			options = url.parse('http://' + nconf.get('host') + '/' + nconf.get('username') + '/tube/'  + slug.replace(getExtension(slug), '') + '.json');
+
+		options.method = 'POST';
+		options.headers = {
+			'Content-Type': 'application/json',
+			'Content-Length': tubeArgs.length
+		};
+
+		console.log(options);
+
+		var req = http.request(options, function (res) {					
+			var body;
+
+			if (res.statusCode == 401 || res.statusCode === 403) {
+				return callback(new Error('Unable to complete your request. Invalid credentials supplied.'));
+			} else if (res.statusCode >= 400) {
+				return callback(new Error('Unable to complete your request. Server returned ' + res.statusCode));
+			}
+
+			body = '';
+			res.on('data', function (chunk) {
+				body += chunk;
+			});
+
+			res.on('end', function () {
+				callback(null, body);
+			});
+		});
+
+		req.on('error', function (err) {
+			callback(err);
+		});											
+
+		req.write(tubeArgs);				
+		req.end();				
 	}
 });
 
