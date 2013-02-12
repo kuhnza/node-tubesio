@@ -476,8 +476,6 @@ _.extend(RunCommand.prototype, {
 			'Content-Length': tubeArgs.length
 		};
 
-		console.log(options);
-
 		var req = http.request(options, function (res) {					
 			var body;
 
