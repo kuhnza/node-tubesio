@@ -1,6 +1,6 @@
 {
 	"name": "tubesio",
-	"version": "0.1.8",
+	"version": "0.1.9",
 	"author": "tubes.io <support@tubes.io>",
 	"description": "A collection of clients and utilities for interacting with tubes.io services via Node JS.",
 	"homepage": "http://tubes.io",
