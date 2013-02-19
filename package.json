@@ -24,11 +24,11 @@
 	    "tubesio"	    
 	],
 	"dependencies": {
-		"async": "0.1.x",
+		"async": "0.2.x",
     	"cheerio": "0.10.x",
     	"nconf": "0.6.x",
-    	"npm": "1.1.x",
-		"optimist": "0.1.x",
+    	"npm": "1.2.x",
+		"optimist": "0.3.x",
         "prompt": "0.2.x",		
 	    "tunnel": "0.0.x",
 	    "underscore": "1.4.x",
