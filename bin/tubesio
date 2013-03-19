@@ -11,22 +11,20 @@ var argv = require('optimist').argv,
 /*
  * Internal imports
  */
-var commands = require('./commands');
+var commands = require('../lib/tubesio/cli');
 
 function getUserHome() {
   return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
 }
 
 function handleErr(err, command) {
-	console.error(err.message);
-	//command.help();
+	console.error(err.message + '\nOperation failed.');
 }
 
 function usage() {
-	console.log('\nUsage: tubesio <command> [ARGS...]');
-	console.log('');
-	console.log('where command is one of:\n');
-	console.log('\tcreate, deploy, init, run');
+	console.error('\nUsage: tubesio <command> [ARGS...]'
+                  + 'where command is one of:\n'
+                  + '\tcreate, deploy, init, run');
 	process.exit(1);
 }
 
@@ -49,7 +47,7 @@ function main() {
 		if (argv._.length > 1 && argv._[1] === 'help') {
 			command.help();	
 		} else {
-			command.run(nconf, argv, function(err, result) {
+			command.run(nconf, argv, function onComplete(err, result) {
 				if (err) { return handleErr(err, command); }
 				console.log(result);
 			});
