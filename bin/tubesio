@@ -8,6 +8,7 @@ var argv = require('optimist').argv,
     http = require('http'),
     nconf = require('nconf');
 
+
 /*
  * Internal imports
  */
@@ -22,14 +23,14 @@ function handleErr(err, command) {
 }
 
 function usage() {
-	console.error('\nUsage: tubesio <command> [ARGS...]'
-                  + 'where command is one of:\n'
-                  + '\tcreate, deploy, init, run');
+	console.error('\nUsage: tubesio <command> [ARGS...]' +
+                  'where command is one of:\n' +
+                  '\tcreate, deploy, init, run');
 	process.exit(1);
 }
 
-function main() {
-	var config, command;
+(function main() {
+	var command;
 	
 	nconf.argv()
          .env()
@@ -41,7 +42,7 @@ function main() {
 		usage();
 	}
 
-	command = argv._[0]
+	command = argv._[0];
 	if (_.has(commands, command)) {
 		command = new commands[command]();
 		if (argv._.length > 1 && argv._[1] === 'help') {
@@ -56,6 +57,4 @@ function main() {
 		console.error('Unknown command: ' + command);
 		usage();
 	}
-}
-
-main();
+})();
