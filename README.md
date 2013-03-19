@@ -99,21 +99,27 @@ script that performs a HTTP request, parses the resulting HTML and extracts the 
 
 ```javascript
 // Required import
-var tubesio = require('tubesio')(process.env.USERNAME, process.env.API_KEY);
+var tubesio = require('tubesio')('<username>', '<apiKey>');
 
 // Optional imports
-var cheerio = require('cheerio'),
-    request = tubesio.http.request;
+var cheerio = require('cheerio');
+
+// Shortcuts
+request = tubesio.http.request,
+args = tubesio.utils.args.demand('name'),
+last = tubesio.utils.lastResult;
 
 request('http://tubes.io/', {
     complete: function (err, body) {
        if (err) {           
            return tubesio.finish(err);
        }
-       
+
        var $ = cheerio.load(body);
        tubesio.finish({ 
-           title: $('title').text()
+           title: $('title').text(),
+           hello: args.name,
+           lastHello: last.hello
        });            
     }
 });
@@ -121,15 +127,17 @@ request('http://tubes.io/', {
 
 The first line imports the tubesio lib. Notice the two arguments passed to the
 call to require. This is required for authentication against tubesio services
-such as the HTTP proxies. By convention we can pass these details in directly
-making use of the fact that the node runtime environment has your username and 
-API key set for your convenience. Of course these are just strings and can be
-hard-coded if you require it.
+such as the HTTP proxies.
 
 Next we import [cheerio](https://github.com/MatthewMueller/cheerio) which is a
 nice, lightweight DOM parsing and normalizing library with support for jQuery
 like selectors and syntax. We also create a shortcut reference to the tubesio
 [request](#request) method.
+
+After that we set up some additional shortcuts to the request method for brevity,
+the tube arguments (passed as either GET or POST parameters) and the result of
+the last tube run (this will be populated if you turn on "Cache Last Result" in
+your tube settings).
 
 Calling the request method we pass the URL and attach a callback to the `complete` 
 property of the request settings object. The callback is passed the body of
@@ -156,7 +164,7 @@ data you pass to it is what gets returned from the API.
 
 ##### request(location, [settings])
 
-A vastly simplified and elegent HTTP request method. Supports smart 
+A vastly simplified and elegant HTTP request method. Supports smart
 switching between HTTP/HTTPS based on URL, automatic GZIP and DEFLATE 
 decompression, object serialization and proxy servers. 
 
@@ -255,7 +263,18 @@ and supports log level filtering.
 
 #### tubesio.utils
 
-TODO
+Utility functions and helpful properties.
+
+##### args
+
+An object containing your GET or POST parameters.
+
+##### lastResult
+
+An object containing the result of the last successful run of your tube. One of it's uses is for diffing against the
+current result set to see if anything has changed.
+
+This property will be an empty object unless "Cache Last Result" is turned on within the tube meta/settings.
 
 ## Supported Languages
 
