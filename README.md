@@ -116,7 +116,7 @@ request('http://tubes.io/', {
        }
 
        var $ = cheerio.load(body);
-       tubesio.finish({ 
+       tubesio.finish(null, {
            title: $('title').text(),
            hello: args.name,
            lastHello: last.hello
@@ -144,7 +144,7 @@ property of the request settings object. The callback is passed the body of
 the resulting HTTP response. We then load the body into cheerio and extract the
 title text out. 
 
-Lastly a call to the [finish](#tubesio-finish) completes the request. It's 
+Lastly a call to the [finish](#tubesio.finish) completes the request. It's
 important that all code paths eventually call `finish`. Neglecting to do so
 will cause your script to timeout as the node runtime won't know when
 your script is finished. The `finish` method is also important because the 
@@ -156,9 +156,25 @@ data you pass to it is what gets returned from the API.
 
 ### Modules
 
+* [tubesio](#tubesio)
 * [tubesio.http](#tubesiohttp)
 * [tubesio.logging](#tubesiologging)
 * [tubesio.utils](#tubesioutils)
+
+#### tubesio
+
+##### tubesio.finish(err, result)
+
+Exits the current script.
+
+The `err` argument if defined and an instance of `Error` will cause the script
+to exit with a non-zero exit code and will print the error message to stderr. The
+exit code defaults to 1 but may be overridden by setting the exitCode property of
+the err object.
+
+The `result` argument should be a plain Javascript object representing the
+data you wish to output. The result will be passed through JSON.stringify and
+printed to stdout before exiting with exit code 0.
 
 #### tubesio.http 
 
