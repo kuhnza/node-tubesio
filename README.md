@@ -274,7 +274,7 @@ An object containing your GET or POST parameters.
 An object containing the result of the last successful run of your tube. One of it's uses is for diffing against the
 current result set to see if anything has changed.
 
-This property will be an empty object unless "Cache Last Result" is turned on within the tube meta/settings.
+This property will be null unless "Cache Last Result" is turned on within the tube meta/settings.
 
 ## Supported Languages
 
