@@ -1,41 +1,43 @@
 {
-	"name": "tubesio",
-	"version": "0.1.15",
-	"author": "tubes.io <support@tubes.io>",
-	"description": "A collection of clients and utilities for interacting with tubes.io services via Node JS.",
-	"homepage": "http://tubes.io",
-	"bugs": "https://github.com/kuhnza/node-tubesio/issues",
-	"contributors": [
-		{
-			"name": "Dave Kuhn",
-			"email": "david.s.kuhn@gmail.com"
-		}
-	],
-	"main": "./lib/index.js",
-	"preferGlobal": "true",
-	"bin": {
-		"tubesio" : "./bin/tubesio"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/kuhnza/node-tubesio.git"
-	},
-	"keywords": [
-	    "tubesio"	    
-	],
-	"dependencies": {
-		"async": "0.2.x",
-    	"cheerio": "0.10.x",
-    	"nconf": "0.6.x",
-    	"npm": "1.2.x",
-		"optimist": "0.3.x",
-        "prompt": "0.2.x",		
-	    "tunnel": "0.0.x",
-	    "underscore": "1.4.x",
-	    "underscore.string": "2.3.x"        
-	},
-	"license": "MIT",
-	"engine": {
-		"node": ">=0.8.x"
-	}
+    "name": "tubesio",
+    "version": "0.1.16",
+    "author": "tubes.io <support@tubes.io>",
+    "description": "A collection of clients and utilities for interacting with tubes.io services via Node JS.",
+    "homepage": "http://tubes.io",
+    "bugs": "https://github.com/kuhnza/node-tubesio/issues",
+    "contributors": [
+        {
+            "name": "Dave Kuhn",
+            "email": "david.s.kuhn@gmail.com"
+        }
+    ],
+    "main": "./lib/index.js",
+    "preferGlobal": "true",
+    "bin": {
+        "tubesio" : "./bin/tubesio"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kuhnza/node-tubesio.git"
+    },
+    "keywords": [
+        "tubesio"       
+    ],
+    "dependencies": {
+        "async": "0.2.x",
+        "cheerio": "0.10.x",
+        "jsdom": "0.3.x",
+        "nconf": "0.6.x",
+        "npm": "1.2.x",
+        "optimist": "0.3.x",
+        "prompt": "0.2.x",  
+        "request": "2.16.x",    
+        "tunnel": "0.0.x",
+        "underscore": "1.4.x",
+        "underscore.string": "2.3.x"        
+    },
+    "license": "MIT",
+    "engine": {
+        "node": ">=0.8.x"
+    }
 }
