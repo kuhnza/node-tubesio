@@ -6,7 +6,7 @@
  */
 
 // Required imports
-var tubesio = require('../lib/index')(process.env.USERNAME, process.env.API_KEY),
+var tubesio = require('tubesio')(process.env.USERNAME, process.env.API_KEY),
 	http = tubesio.http;
 
 // Optional imports
