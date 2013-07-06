@@ -1,65 +1,58 @@
 /* 
  * jsdom.js 
- *
+ * 
  * Using JSDom to parse the page and collect values using jQuery: 
  * take a GET or POST value named "query" and use it to perform a 
- * search on duckduckgo.com and return the results. 
+ * search on duckduckgo.com and return the results.
  */
+var args, jsdom, parseSearchResults, request, tubesio, us;
 
-// Required imports
-var tubesio = require('../../lib/index')('<insert your username>', '<insert your API key>'),
-    http = tubesio.http;
+// Required import
+tubesio = require("../../lib/index")("<insert your username>", "<insert your API key>");
 
 // Optional imports
-var jsdom = require('jsdom'),
-    us = require('underscore.string');
+jsdom = require("jsdom");
+us = require("underscore.string");
 
-/**
+// Globals
+request = tubesio.http.request;
+args = tubesio.utils.args.demand("query");
+
+/*
  * Parses search results into an array.
  */
-function parseSearchResults(err, body) {
+parseSearchResults = function(err, body) {
     if (err) { return tubesio.finish(err); }
 
-    var result = [];
-
+    // Bootstrap a JSDom environment with a sideloaded copy of jQuery
     jsdom.env({
         html: body,
-        scripts: [
-            'http://code.jquery.com/jquery-1.5.min.js'
-        ]
-    }, function (err, window) {
+        scripts: ["http://code.jquery.com/jquery-1.5.min.js"]
+    }, function(err, window) {
+        var $, result;
+        
         if (err) { return tubesio.finish(err); }
 
-        var $ = window.jQuery;
+        result = [];
 
-        $('#links .results_links').each(function (i) {
-            var $a = $(this).find('.links_main a');
-            
+        // Iterate through the result set using familar jQuery selectors and functions.
+        $ = window.jQuery;
+        $("#links .results_links").each(function(i) {
+            var $a;
+
+            $a = $(this).find(".links_main a");
             result.push({
                 title: $a.text(),
-                href: $a.attr('href'),
-                snippet: us.trim($(this).find('.snippet').text())
+                href: $a.attr("href"),
+                snippet: us.trim($(this).find(".snippet").text())
             });
         });
 
-        return tubesio.finish(result);
+        // Return the result
+        tubesio.finish(result);
     });
-}
+};
 
-/*
- * GET or POST values are passed as a command line argument to 
- * your script in JSON format. As per usual the first two arguments
- * are the program currently executing (node), your script name.
- * Consequently your GET / POST values appear third in the array.
- */
-var args;
-try {
-    args = JSON.parse(process.argv[2]);
-} catch (err) {
-    tubesio.finish(new Error('Missing query argument.'));
-}
-
-/* Perform the request assuming that a value has been passed for 
- * "query" either as a GET or POST argument.
- */
-http.request('http://duckduckgo.com/html/?q=' + args.query, parseSearchResults);
+// Perform the request assuming that a value has been passed for 
+// "query" either as a GET or POST argument.
+request("http://duckduckgo.com/html/?q=" + args.query, parseSearchResults);
