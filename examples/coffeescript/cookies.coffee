@@ -24,22 +24,22 @@ cookieJarBefore = cookieJar.toString()
 
 
 onComplete = (err, body) ->
-	if err then throw err
+    if err then throw err
 
-	# Print out before and after values to show that cookies have been set.
-	# Though we're finishing the example here we could just as easily reuse
-	# the cookie in a subsequent request such as might be required when 
-	# logging into a website.
-	tubesio.finish { 
-		cookieJarBefore: cookieJarBefore
-		cookieJarAfter: cookieJar.toString() 
-	}
+    # Print out before and after values to show that cookies have been set.
+    # Though we're finishing the example here we could just as easily reuse
+    # the cookie in a subsequent request such as might be required when 
+    # logging into a website.
+    tubesio.finish { 
+        cookieJarBefore: cookieJarBefore
+        cookieJarAfter: cookieJar.toString() 
+    }
 
 
 # Make a request including the cookieJar in our settings object.
 request 'http://www.amazon.com', {
-	cookieJar: cookieJar
-	complete: onComplete
+    cookieJar: cookieJar
+    complete: onComplete
 }
 
 

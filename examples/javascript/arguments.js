@@ -7,42 +7,42 @@
 
 // Required imports
 var tubesio = require('../../lib/index')('<insert your username>', '<insert your API key>'),
-	http = tubesio.http;
+    http = tubesio.http;
 
 // Optional imports
 var jsdom = require('jsdom'),
-	us = require('underscore.string');
+    us = require('underscore.string');
 
 /**
  * Parses search results into an array.
  */
 function parseSearchResults(err, body) {
-	if (err) { return tubesio.finish(err); }
+    if (err) { return tubesio.finish(err); }
 
-	var result = [];
+    var result = [];
 
-	jsdom.env({
-	    html: body,
-	    scripts: [
-	    	'http://code.jquery.com/jquery-1.5.min.js'
-	    ]
-	}, function (err, window) {
-		if (err) { return tubesio.finish(err); }
+    jsdom.env({
+        html: body,
+        scripts: [
+            'http://code.jquery.com/jquery-1.5.min.js'
+        ]
+    }, function (err, window) {
+        if (err) { return tubesio.finish(err); }
 
-	    var $ = window.jQuery;
+        var $ = window.jQuery;
 
-	    $('#links .results_links').each(function (i) {
-			var $a = $(this).find('.links_main a');
-			
-			result.push({
-				title: $a.text(),
-				href: $a.attr('href'),
-				snippet: us.trim($(this).find('.snippet').text())
-			});
-		});
+        $('#links .results_links').each(function (i) {
+            var $a = $(this).find('.links_main a');
+            
+            result.push({
+                title: $a.text(),
+                href: $a.attr('href'),
+                snippet: us.trim($(this).find('.snippet').text())
+            });
+        });
 
-		return tubesio.finish(result);
-	});
+        return tubesio.finish(result);
+    });
 }
 
 /*
@@ -53,9 +53,9 @@ function parseSearchResults(err, body) {
  */
 var args;
 try {
-	args = JSON.parse(process.argv[2]);
+    args = JSON.parse(process.argv[2]);
 } catch (err) {
-	tubesio.finish(new Error('Missing query argument.'));
+    tubesio.finish(new Error('Missing query argument.'));
 }
 
 /* Perform the request assuming that a value has been passed for 

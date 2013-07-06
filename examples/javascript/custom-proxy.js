@@ -13,11 +13,11 @@
 
 // Required imports
 var tubesio = require('../../lib/index')('<insert your username>', '<insert your API key>'),
-	http = tubesio.http;
+    http = tubesio.http;
 
 // Optional imports
 var cheerio = require('cheerio'),
-	us = require('underscore.string');
+    us = require('underscore.string');
 
 
 /**
@@ -25,27 +25,27 @@ var cheerio = require('cheerio'),
  * trending repositories.
  */
 function parseGitHubTrendingRepos(err, body) {
-	if (err) { return tubesio.finish(err); }
+    if (err) { return tubesio.finish(err); }
 
-	// Load the raw HTML into a cheerio object so we can traverse
-	// the data using CSS selectors ala jQuery.
-	var $ = cheerio.load(body),
-		result = {
-			title: $('title').text(),
-			trending: []
-		};
+    // Load the raw HTML into a cheerio object so we can traverse
+    // the data using CSS selectors ala jQuery.
+    var $ = cheerio.load(body),
+        result = {
+            title: $('title').text(),
+            trending: []
+        };
 
-	// Iterate over the trending repositories extracting the names
-	// and hyperlinks.
-	$('#trending-repositories > ol > li').each(function (i, e) {
-		result.trending.push({
-			name: us.trim($(e).find('h3').text()),
-			href: 'https://github.com' + $(e).find('a').last().attr('href')
-		});
-	});
+    // Iterate over the trending repositories extracting the names
+    // and hyperlinks.
+    $('#trending-repositories > ol > li').each(function (i, e) {
+        result.trending.push({
+            name: us.trim($(e).find('h3').text()),
+            href: 'https://github.com' + $(e).find('a').last().attr('href')
+        });
+    });
 
-	// Return our results object
-	tubesio.finish(result);	
+    // Return our results object
+    tubesio.finish(result); 
 }
 
 /* Note the change the proxy from tubes.io to a custom one in the
@@ -53,12 +53,12 @@ function parseGitHubTrendingRepos(err, body) {
  * from http://www.hidemyass.com/proxy-list/ and may not work 
  * forever. Plug in your own if it no longer works. */
 var settings = {
-		complete: parseGitHubTrendingRepos,
-		proxy: {
-		 	host: '192.211.49.210', 
-		 	port: 3128
-		}
-	};
+        complete: parseGitHubTrendingRepos,
+        proxy: {
+            host: '192.211.49.210', 
+            port: 3128
+        }
+    };
 
 // Make the request
 http.request('https://github.com/explore', settings);
