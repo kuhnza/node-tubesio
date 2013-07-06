@@ -1,64 +1,33 @@
 /* 
- * arguments.js 
+ * arguments.js
  *
- * Take a GET or POST value named "query" and use it to perform a 
- * search on duckduckgo.com and return the results.
+ * Demonstrate the usage of GET or POST arguments within a tube script. When POSTed arguments may be
+ * encoded as x-www-form-urlencoded or application/json.
  */
 
-// Required imports
-var tubesio = require('../../lib/index')('<insert your username>', '<insert your API key>'),
-    http = tubesio.http;
-
-// Optional imports
-var jsdom = require('jsdom'),
-    us = require('underscore.string');
-
-/**
- * Parses search results into an array.
- */
-function parseSearchResults(err, body) {
-    if (err) { return tubesio.finish(err); }
-
-    var result = [];
-
-    jsdom.env({
-        html: body,
-        scripts: [
-            'http://code.jquery.com/jquery-1.5.min.js'
-        ]
-    }, function (err, window) {
-        if (err) { return tubesio.finish(err); }
-
-        var $ = window.jQuery;
-
-        $('#links .results_links').each(function (i) {
-            var $a = $(this).find('.links_main a');
-            
-            result.push({
-                title: $a.text(),
-                href: $a.attr('href'),
-                snippet: us.trim($(this).find('.snippet').text())
-            });
-        });
-
-        return tubesio.finish(result);
-    });
-}
+var args, result, tubesio;
 
 /*
- * GET or POST values are passed as a command line argument to 
- * your script in JSON format. As per usual the first two arguments
- * are the program currently executing (node), your script name.
- * Consequently your GET / POST values appear third in the array.
+ * Required imports (replace '../../lib/index' with 'tubesio' when using these outside example dir)
  */
-var args;
-try {
-    args = JSON.parse(process.argv[2]);
-} catch (err) {
-    tubesio.finish(new Error('Missing query argument.'));
+tubesio = require('../../lib/index')('<insert your username>', '<insert your API key>');
+
+/*
+ * Use the tubesio.utils.args object to parse our arguments object and specify required arguments
+ * using the chainable demand function.
+ */
+args = tubesio.utils.args.demand('name').demand('age');
+
+// Apply both our require arguments to the result
+result = {
+  name: args.name,
+  age: args.age
+};
+
+// Include an optional gender argument if present
+if (args.gender != null) {
+  result.gender = args.gender;
 }
 
-/* Perform the request assuming that a value has been passed for 
- * "query" either as a GET or POST argument.
- */
-http.request('http://duckduckgo.com/html/?q=' + args.query, parseSearchResults);
+// Return the result
+tubesio.finish(result);
