@@ -69,7 +69,7 @@ By convention scripts should be named `<slug>.js` where slug
 is the slugified version of your tube's name. For example if your
 tube's name is My 1st Tube then your script name should be
 `my-1st-tube.js`. This generally means replacing spaces and
-special charachters with dashes. If you're unsure of what your
+special characters with dashes. If you're unsure of what your
 tube's slug name is you should take a look at your tube's endpoint. 
 The slug will be the portion after the last "/" and before the format
 ".json" (e.g. http://tubes.io/username/tube/_my-1st-tube_.json)
